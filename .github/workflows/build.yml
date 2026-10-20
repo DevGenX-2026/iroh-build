@@ -39,7 +39,7 @@ jobs:
       - name: Generate Kotlin bindings
         working-directory: iroh-ffi
         run: |
-          # Используем бинарник из самого репозитория для совместимости версий
+          # Полностью заменяем старый скрипт с UDL_FILE
           cargo run --locked --bin uniffi-bindgen -- generate \
             --library ../jniLibs/arm64-v8a/libiroh_ffi.so \
             --language kotlin \
@@ -48,12 +48,11 @@ jobs:
 
       - name: Rename generated Kotlin file
         run: |
-          # UniFFI может сгенерировать файл с другим именем (например, iroh_ffi.kt)
-          # Переименовываем его в iroh.kt, если он существует
+          # Переименовываем файл, если он называется iroh_ffi.kt
           if [ -f kotlin-bindings/iroh_ffi.kt ]; then
             mv kotlin-bindings/iroh_ffi.kt kotlin-bindings/iroh.kt
           fi
-          # На всякий случай проверяем, что файл есть
+          echo "Содержимое папки kotlin-bindings:"
           ls -la kotlin-bindings/
 
       - name: Package artifact
